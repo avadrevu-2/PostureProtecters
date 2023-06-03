@@ -1,14 +1,14 @@
 """
-MicroPython Driver for MPU6050 IMU
+Driver for MPU6050 IMU
 Reference: https://microcontrollerslab.com/micropython-mpu-6050-esp32-esp8266/
 """
 
-from machine import I2C, Pin
+from machine import SoftI2C, Pin
 
 
 class Imu():
     def __init__(self, scl: int, sda: int, addr=0x68):
-        self.i2c = I2C(scl=Pin(scl), sda=Pin(sda))
+        self.i2c = SoftI2C(scl=Pin(scl), sda=Pin(sda))
         self.addr = addr
         self.i2c.start()
         self.i2c.writeto(self.addr, bytearray([107, 0]))

@@ -1,5 +1,5 @@
 """
-MicroPython Driver for HC-SR04 Ultrasonic Sensor
+Driver for HC-SR04 Ultrasonic Sensor
 Reference: https://github.com/rsc1975/micropython-hcsr04/blob/master/hcsr04.py
 """
 
