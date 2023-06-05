@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "serial://dev/ttyUSB0",
+			"uri": "serial://%2fdev%2fttyusb0/"
+		},
+		{
+			"name": "serial://dev/ttyUSB0",
+			"uri": "serial://%2fdev%2fttyusb0/"
+		}
+	],
+	"settings": {
+		"python.languageServer": "Pylance"
+	}
+}
