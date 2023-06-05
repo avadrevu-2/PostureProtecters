@@ -47,6 +47,17 @@ def train_random_forest(features: np.ndarray, labels: pd.Series) -> RandomForest
     # Evaluate the performance
     y_pred = rf.predict(x_test)
     accuracy = accuracy_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
+
+    plt.figure(figsize=(12, 12))
+    img = sns.heatmap(cm, annot=True, annot_kws={"size": 20}, fmt='d', cmap='Blues', cbar=False, xticklabels=['Bad Posture', 'Good Posture'], yticklabels=['Bad Posture', 'Good Posture'])
+    img.set_xticklabels(img.get_xmajorticklabels(), fontsize = 20)
+    img.set_yticklabels(img.get_ymajorticklabels(), fontsize = 20)
+    plt.title("Confusion Matrix", fontsize=35)
+    plt.xlabel("Predicted Labels", fontsize=30)
+    plt.ylabel("True Labels", fontsize=30)
+    plt.show()
+
     print(f"Accuracy: {accuracy}")
     return rf
 
