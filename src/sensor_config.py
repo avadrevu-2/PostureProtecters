@@ -4,7 +4,7 @@ Sensor Configuration, sets up all sensors and collects data from them
 
 from imu import Imu
 from fsr import Fsr
-from ultrasonic import HCSR04
+from ultrasonic import UltraSonic
 import time
 
 # Sensor Pins
@@ -32,23 +32,23 @@ class Sensors():
         self.fsr_1 = Fsr(FSR_1_PIN)
         self.fsr_2 = Fsr(FSR_2_PIN)
         self.fsr_3 = Fsr(FSR_3_PIN)
-        self.ultrasonic_1 = HCSR04(US_TRIG_1_PIN, US_ECHO_1_PIN)
-        self.ultrasonic_2 = HCSR04(US_TRIG_2_PIN, US_ECHO_2_PIN)
-        self.ultrasonic_3 = HCSR04(US_TRIG_3_PIN, US_ECHO_3_PIN)
-        self.ultrasonic_4 = HCSR04(US_TRIG_4_PIN, US_ECHO_4_PIN)
+        self.ultrasonic_1 = UltraSonic(US_TRIG_1_PIN, US_ECHO_1_PIN)
+        self.ultrasonic_2 = UltraSonic(US_TRIG_2_PIN, US_ECHO_2_PIN)
+        self.ultrasonic_3 = UltraSonic(US_TRIG_3_PIN, US_ECHO_3_PIN)
+        self.ultrasonic_4 = UltraSonic(US_TRIG_4_PIN, US_ECHO_4_PIN)
         self.imu = Imu(IMU_SCL_PIN, IMU_SDA_PIN)
 
     def get_all(self):
         fsr_1 = self.fsr_1.get_raw()
         fsr_2 = self.fsr_2.get_raw()
         fsr_3 = self.fsr_3.get_raw()
-        ultrasonic_1 = self.ultrasonic_1.distance_cm()
+        ultrasonic_1 = self.ultrasonic_1.get_distance_cm()
         time.sleep(0.1)
-        ultrasonic_2 = self.ultrasonic_2.distance_cm()
+        ultrasonic_2 = self.ultrasonic_2.get_distance_cm()
         time.sleep(0.1)
-        ultrasonic_3 = self.ultrasonic_3.distance_cm()
+        ultrasonic_3 = self.ultrasonic_3.get_distance_cm()
         time.sleep(0.1)
-        ultrasonic_4 = self.ultrasonic_4.distance_cm()
+        ultrasonic_4 = self.ultrasonic_4.get_distance_cm()
         time.sleep(0.1)
         imu = self.imu.get_values()
 
