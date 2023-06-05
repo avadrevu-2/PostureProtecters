@@ -1,41 +1,121 @@
-"""
-Driver for HC-SR04 Ultrasonic Sensor
-Reference: https://github.com/rsc1975/micropython-hcsr04/blob/master/hcsr04.py
-"""
+# """
+# Driver for HC-SR04 Ultrasonic Sensor
+# Reference: https://github.com/rsc1975/micropython-hcsr04/blob/master/hcsr04.py
+# """
 
-from machine import Pin, time_pulse_us
-from utime import sleep_us
-
-
-class UltraSonic():
-    def __init__(self, trig: int, echo: int, timeout_us=30000):
-        self.timeout_us = timeout_us
-        self.trig = Pin(trig, Pin.OUT)
-        self.echo = Pin(echo, Pin.IN)
-        self.trig.value(0)
+# from machine import Pin, time_pulse_us
+# from utime import sleep_us
 
 
-    def send_pulse_and_time(self) -> int:
-        # Stabalize value at 0
-        self.trig.value(0)
-        sleep_us(5)
+# class UltraSonic():
+#     def __init__(self, trig: int, echo: int, timeout_us=30000):
+#         self.timeout_us = timeout_us
+#         self.trig = Pin(trig, Pin.OUT)
+#         self.echo = Pin(echo, Pin.IN)
+#         self.trig.value(0)
 
+
+#     def send_pulse_and_time(self) -> int:
+#         # Stabalize value at 0
+#         self.trig.value(0)
+#         sleep_us(5)
+
+#         # Send a 10us pulse.
+#         self.trig.value(1)
+#         sleep_us(10)
+#         self.trig.value(0)
+
+#         # Wait 'timeout_us' microseconds for the echo pin to go high
+#         try:
+#             pulse_time = time_pulse_us(self.echo, 1)
+#             print(pulse_time)
+#             if pulse_time < 0:  # If we timed out, then return -1
+#                 return -1
+#             return pulse_time
+#         except Exception as e:
+#             print("Exception: ", e)
+#             return -1           
+
+#     def get_distance_cm(self) -> float:
+#         pulse_time = self.send_pulse_and_time()
+#         if pulse_time < 0:
+#             return -1
+#         distance_cm = (pulse_time / 2) / 29.1
+#         return distance_cm
+
+import machine, time
+from machine import Pin
+
+__version__ = '0.2.0'
+__author__ = 'Roberto Sánchez'
+__license__ = "Apache License 2.0. https://www.apache.org/licenses/LICENSE-2.0"
+
+class HCSR04:
+    """
+    Driver to use the untrasonic sensor HC-SR04.
+    The sensor range is between 2cm and 4m.
+    The timeouts received listening to echo pin are converted to OSError('Out of range')
+    """
+    # echo_timeout_us is based in chip range limit (400cm)
+    def __init__(self, trigger_pin, echo_pin, echo_timeout_us=500*2*30):
+        """
+        trigger_pin: Output pin to send pulses
+        echo_pin: Readonly pin to measure the distance. The pin should be protected with 1k resistor
+        echo_timeout_us: Timeout in microseconds to listen to echo pin. 
+        By default is based in sensor limit range (4m)
+        """
+        self.echo_timeout_us = echo_timeout_us
+        # Init trigger pin (out)
+        self.trigger = Pin(trigger_pin, mode=Pin.OUT, pull=-1)
+        self.trigger.value(0)
+
+        # Init echo pin (in)
+        self.echo = Pin(echo_pin, mode=Pin.IN, pull=-1)
+
+    def _send_pulse_and_wait(self):
+        """
+        Send the pulse to trigger and listen on echo pin.
+        We use the method `machine.time_pulse_us()` to get the microseconds until the echo is received.
+        """
+        self.trigger.value(0) # Stabilize the sensor
+        time.sleep_us(5)
+        self.trigger.value(1)
         # Send a 10us pulse.
-        self.trig.value(1)
-        sleep_us(10)
-        self.trig.value(0)
-
-        # Wait 'timeout_us' microseconds for the echo pin to go high
+        time.sleep_us(10)
+        self.trigger.value(0)
         try:
-            pulse_time = time_pulse_us(self.echo, 1, self.timeout_us)
-            if pulse_time < 0:  # If we timed out, then return -1
-                return -1
+            pulse_time = machine.time_pulse_us(self.echo, 1, self.echo_timeout_us)
+            print(pulse_time)
             return pulse_time
-        except Exception as e:
-            print("Exception: ", e)
-            return -1           
+        except OSError as ex:
+            if ex.args[0] == 110: # 110 = ETIMEDOUT
+                raise OSError('Out of range')
+            raise ex
 
-    def get_distance_cm(self) -> float:
-        pulse_time = self.send_pulse_and_time()
-        distance_cm = (pulse_time / 2) / 29.1
-        return distance_cm
+    def distance_mm(self):
+        """
+        Get the distance in milimeters without floating point operations.
+        """
+        pulse_time = self._send_pulse_and_wait()
+
+        # To calculate the distance we get the pulse_time and divide it by 2 
+        # (the pulse walk the distance twice) and by 29.1 becasue
+        # the sound speed on air (343.2 m/s), that It's equivalent to
+        # 0.34320 mm/us that is 1mm each 2.91us
+        # pulse_time // 2 // 2.91 -> pulse_time // 5.82 -> pulse_time * 100 // 582 
+        mm = pulse_time * 100 // 582
+        return mm
+
+    def distance_cm(self):
+        """
+        Get the distance in centimeters with floating point operations.
+        It returns a float
+        """
+        pulse_time = self._send_pulse_and_wait()
+
+        # To calculate the distance we get the pulse_time and divide it by 2 
+        # (the pulse walk the distance twice) and by 29.1 becasue
+        # the sound speed on air (343.2 m/s), that It's equivalent to
+        # 0.034320 cm/us that is 1cm each 29.1us
+        cms = (pulse_time / 2) / 29.1
+        return cms
