@@ -1,4 +1,7 @@
 """
+UCSD ECE196 - Posture Protectors
+Authors: Abhijit Vadrevu, Aryan Pandhare, Marcus Higashi
+
 Driver for Bluetooth Low Energy (BLE) devices.
 Reference: https://github.com/micropython/micropython/blob/master/examples/bluetooth/ble_uart_peripheral.py
 """

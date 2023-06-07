@@ -1,4 +1,7 @@
 """
+UCSD ECE196 - Posture Protectors
+Authors: Abhijit Vadrevu, Aryan Pandhare, Marcus Higashi
+
 Driver for Force Sensitive Resistor
 Reference: https://docs.micropython.org/en/latest/esp8266/tutorial/adc.html
 """

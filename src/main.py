@@ -1,3 +1,12 @@
+"""
+UCSD ECE196 - Posture Protectors
+Authors: Abhijit Vadrevu, Aryan Pandhare, Marcus Higashi
+
+Main script for the ESP32. 
+Collects data from sensors and sends it over BLE.
+"""
+
+
 import json
 import ubluetooth
 from machine import Timer

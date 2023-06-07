@@ -1,4 +1,7 @@
 """
+UCSD ECE196 - Posture Protectors
+Authors: Abhijit Vadrevu, Aryan Pandhare, Marcus Higashi
+
 Driver for MPU6050 IMU
 Reference: https://microcontrollerslab.com/micropython-mpu-6050-esp32-esp8266/
 """

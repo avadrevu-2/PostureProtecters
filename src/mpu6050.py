@@ -1,3 +1,10 @@
+"""
+UCSD ECE196 - Posture Protectors
+
+MPU6050 IMU Class
+Created by: Adam Ježek, link: https://github.com/adamjezek98/MPU6050-ESP8266-MicroPython/blob/master/mpu6050.py
+"""
+
 import machine
 
 

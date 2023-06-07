@@ -1,4 +1,7 @@
 """
+UCSD ECE196 - Posture Protectors
+Authors: Abhijit Vadrevu, Aryan Pandhare, Marcus Higashi
+
 Sensor Configuration, sets up all sensors and collects data from them
 """
 
@@ -43,13 +46,9 @@ class Sensors():
         fsr_2 = self.fsr_2.get_raw()
         fsr_3 = self.fsr_3.get_raw()
         ultrasonic_1 = self.ultrasonic_1.get_distance_cm()
-        time.sleep(0.1)
         ultrasonic_2 = self.ultrasonic_2.get_distance_cm()
-        time.sleep(0.1)
         ultrasonic_3 = self.ultrasonic_3.get_distance_cm()
-        time.sleep(0.1)
         ultrasonic_4 = self.ultrasonic_4.get_distance_cm()
-        time.sleep(0.1)
         imu = self.imu.get_values()
 
         # Format sensor data

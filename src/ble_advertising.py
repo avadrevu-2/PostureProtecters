@@ -1,4 +1,7 @@
 """
+UCSD ECE196 - Posture Protectors
+Authors: Abhijit Vadrevu, Aryan Pandhare, Marcus Higashi
+
 Helpers for generating BLE advertising payloads.
 Reference: https://github.com/micropython/micropython/blob/a61d40e5e80e33172b41961ee5dcad6fb9a1f4a9/examples/bluetooth/ble_advertising.py
 """

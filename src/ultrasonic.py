@@ -1,4 +1,7 @@
 """
+UCSD ECE196 - Posture Protectors
+Authors: Abhijit Vadrevu, Aryan Pandhare, Marcus Higashi
+
 Driver for HC-SR04 Ultrasonic Sensor
 Reference: https://github.com/rsc1975/micropython-hcsr04/blob/master/hcsr04.py
 """
@@ -11,7 +14,7 @@ class UltraSonic():
     def __init__(self, trig: int, echo: int, timeout_us=30000):
         self.timeout_us = timeout_us
         self.trig = Pin(trig, Pin.OUT)
-        self.echo = Pin(echo, Pin.IN)
+        self.echo = Pin(echo, Pin.IN, pull=Pin.PULL_DOWN)
         self.trig.value(0)
 
 
@@ -20,7 +23,7 @@ class UltraSonic():
         self.trig.value(0)
         sleep_us(5)
 
-        # Send a 10us pulse.
+        # Send a 5us pulse.
         self.trig.value(1)
         sleep_us(10)
         self.trig.value(0)
