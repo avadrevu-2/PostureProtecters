@@ -1,4 +1,5 @@
 import asyncio
+import json
 from bleak import BleakScanner, BleakClient
 from bleak.backends.device import BLEDevice
 
@@ -20,7 +21,7 @@ class BLE():
             print("Couldn't find ESP32 Bluetooth Device")
             return
 
-        print("Starting Data Collection")
+        input("Press Enter to start collection...")
         try:
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
@@ -50,3 +51,17 @@ class BLE():
             if device.name == ESP_32_BLE_NAME:
                 return device
         return None
+    
+
+def basic_notification_handler(_, data: bytearray):
+    str_data = data.decode("utf-8")
+    print(str_data)
+    json_data = json.loads(str_data)
+    print(json_data)
+
+
+
+if __name__ == '__main__':
+    ble = BLE(basic_notification_handler)
+    ble.ble_loop()
+    print("Done")

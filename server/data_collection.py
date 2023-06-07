@@ -3,7 +3,7 @@ import csv
 from bluetooth import BLE
 
 
-FILENAME = 'data.csv'
+FILENAME = 'real_data_bad_2.csv'
 wrote_header_row = False
 
 
@@ -22,7 +22,8 @@ def write_to_csv(data_row: dict):
 
 
 def notification_handler(_, data: bytearray):
-    str_data = data.decode("utf-8") + "}"
+    str_data = data.decode("utf-8")
+    print(str_data)
     json_data = json.loads(str_data)
     print(json_data)
     write_to_csv(json_data)

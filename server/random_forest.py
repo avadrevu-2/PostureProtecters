@@ -10,18 +10,24 @@ import numpy as np
 import joblib
 
 
-GOOD_POSTURE_FILENAME = 'sample_data_good.csv'
-BAD_POSTURE_FILENAME = 'sample_data_bad.csv'
-RANDOM_FOREST_FILENAME = 'random_forest_model.pkl'
+GOOD_POSTURE_FILENAME = 'real_data_good.csv'
+GOOD_POSTURE_2_FILENAME = 'real_data_good_2.csv'
+
+BAD_POSTURE_FILENAME = 'real_data_bad.csv'
+BAD_POSTURE_2_FILENAME = 'real_data_bad_2.csv'
+
+RANDOM_FOREST_FILENAME = 'test_2_random_forest_model.pkl'
 
 
 def preprocess_data(good_csv_file: str, bad_csv_file: str) -> tuple[np.ndarray, pd.Series]:
     # Load the good posture data from the CSV file
-    good_df = pd.read_csv(good_csv_file, skiprows=0)
+    good_df = pd.read_csv(GOOD_POSTURE_2_FILENAME, skiprows=0)
+    # good_df.append(pd.read_csv(GOOD_POSTURE_2_FILENAME, skiprows=1))
     good_df['posture_label'] = 1  # Add posture label column and set it as 1
 
     # Load the bad posture data from the CSV file
-    bad_df = pd.read_csv(bad_csv_file, skiprows=0)
+    bad_df = pd.read_csv(BAD_POSTURE_2_FILENAME, skiprows=0)
+    # bad_df.append(pd.read_csv(BAD_POSTURE_2_FILENAME, skiprows=1))
     bad_df['posture_label'] = 0  # Add posture label column and set it as 1
 
     # Concatenate the good and bad dataframes
@@ -29,6 +35,7 @@ def preprocess_data(good_csv_file: str, bad_csv_file: str) -> tuple[np.ndarray, 
 
     # Separate features and labels
     features = df.drop(columns=['posture_label'])
+    print(features)
     labels = df['posture_label']
 
     # Perform min-max scaling on the features
@@ -37,11 +44,12 @@ def preprocess_data(good_csv_file: str, bad_csv_file: str) -> tuple[np.ndarray, 
     return scaled_features, labels
 
 
+
 def train_random_forest(features: np.ndarray, labels: pd.Series) -> RandomForestClassifier:
     x_train, x_test, y_train, y_test = train_test_split(features, labels, test_size=0.25, random_state=42)
     
     # Initialize and fit the Random Forest classifier
-    rf = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf = RandomForestClassifier(n_estimators=1000, random_state=42)
     rf.fit(x_train, y_train)
 
     # Evaluate the performance

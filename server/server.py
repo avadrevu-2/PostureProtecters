@@ -1,31 +1,36 @@
 import json
 import joblib
+import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from bluetooth import BLE
 
 
-RANDOM_FOREST_FILENAME = 'random_forest_model.pkl'
+RANDOM_FOREST_FILENAME = 'test_2_random_forest_model.pkl'
 
 
 rf_model = joblib.load(RANDOM_FOREST_FILENAME)
 scaler = MinMaxScaler()
 
 
-def preprocess_data(json_data: dict):
+def scale_data(json_data: dict):
     data_values = list(json_data.values())
-    data_array = np.array(data_values).reshape(1, -1)
+    data_array = pd.DataFrame(data_values)
     global scaler
-    scaled_data = scaler.fit_transform(data_array)
+    scaled_data = scaler.fit_transform(data_array).reshape(1, -1)
     return scaled_data
 
 
 def notification_handler(_, data: bytearray):
-    str_data = data.decode("utf-8") + "}"
-    json_data = json.loads(str_data)
-    preprocessed_data = preprocess_data(json_data)
     global rf_model
-    prediction = rf_model.predict(preprocessed_data)
+
+    str_data = data.decode("utf-8")
+    json_data = json.loads(str_data)
+    # print(json_data)
+    scaled_data = scale_data(json_data)
+    # print(scaled_data)
+    prediction = rf_model.predict(scaled_data)
+    # print(prediction)
     if prediction[0] == 1:
         print('Good Posture!')
     else:
